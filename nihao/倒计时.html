@@ -1,0 +1,237 @@
+<!doctype html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>专业的在线倒计时</title>
+    <style>
+        /*以下为CSS样式设置*/
+        /*为了代码简洁使用通配符，实际开发不建议使用*/
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-image:linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);
+        }
+        .ofixed{
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            background-color: #00ff0f;
+            top: 30%;
+            opacity: 0.1;
+            border-radius: 14px;
+            text-align: center;
+            line-height: 30px;
+            transition: 1s;
+            font-size: 12px;
+
+        }
+        .ofixed div{
+            display: none;
+        }
+        .ofixed:hover{
+            opacity: 0.8;
+            width: 180px;
+        }
+        .ofixed:hover div{
+            display: block;
+        }
+        .content {
+            width: 450px;
+            height: 100px;
+            margin: 40px auto 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .button_content {
+            width: 450px;
+            height: 100px;
+            margin: 10px auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        input{
+            width: 80px;
+            height: 60px;
+            /*border:1px solid blue;*/
+            border-radius: 5px;
+            border:none;
+            opacity: 0.7;
+            font-size: 30px;
+            color: deepskyblue;
+            text-align: center;
+
+        }
+        button {
+            width: 100px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4caf50;
+            border: none;
+            border-radius: 6px;
+            position: relative;
+        }
+        button div{
+            position: absolute;
+            top: 0;
+            font: 0;
+            width: 0px;
+            height: 40px;
+            background-color:#2b74e2;
+            transition: 0.4s;
+            opacity: 0.5;
+        }
+        button:hover div{
+            width: 100px;
+        }
+        span {
+            font-size: 40px;
+            position: relative;
+            top: 3px;
+        }
+        #d1 {
+            width: 900px;
+            height: 300px;
+            background-color: blueviolet;
+            border-radius: 20px;
+            /*text-align: center;*/
+            font-weight: bold;
+            font-size: 80px;
+            line-height: 300px;
+            color:black;
+            margin: 0 auto ;
+            text-align: center;
+        }
+        #btn3 {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ofixed">
+        <div>这是一个隐藏的彩蛋</div>
+    </div>
+    <div class="content">
+
+        <input type="text" id="newhours" maxlength="2">
+        <span>时</span>
+        <input type="text" id="newminutes" maxlength="2">
+        <span>分</span>
+        <input type="text" id="newseconds" maxlength="2">
+        <span>秒</span>
+    </div>
+    <div class="button_content">
+        <button id="btn1">开&emsp;始<div></div></button>
+        <button id="btn2">暂&emsp;停<div></div></button>
+        <button id="btn3">重&emsp;置<div></div></button>
+    </div>
+
+    <div id="d1">
+    </div>
+</body>
+    <script>
+        // 获取一次当前系统时间
+        var current_time =new Date();
+        function fn1(){
+            // 首先获取input输入框的的内容
+            var ohours = document.getElementById("newhours").value;
+            var ominutes = document.getElementById("newminutes").value;
+            var oseconds = document.getElementById("newseconds").value;
+            // input输入的内容是字符串，把它们相加成时间总的秒数
+            // 把小时转换成相应的毫秒数
+            var ohours_milli = ohours*60*60*1000;
+            // 把输入的分钟转换成相应的毫秒数
+            var ominutes_millo = ominutes*60*1000;
+            // 把输入的转换成相应的毫秒数
+            var oseconds_milli = oseconds*1000
+            // 累计相加得出用户输入的所有毫秒数
+            var add_time = ohours_milli+ominutes_millo+oseconds_milli;
+           // 通过计时器循环获得新的系统时间
+           var reset_time = new Date();
+           // current_time获取的系统时间加上用户输入的时间 减去当前系统时间，得到倒计时的效果
+           var time = current_time.getTime() + add_time - reset_time.getTime();
+            console.log(time)
+           // 通过上面time获取的倒计时毫秒数，分别除以相对数字得到，分、秒以及毫秒
+           var  hours =Math.floor(time/1000/60/60%24);
+           var minute =Math.floor(time/1000/60%60);
+           var seconds = Math.floor(time/1000%60 );
+           var milliseconds = Math.floor( time % 60);
+           // 获取页面DIv
+           var odiv = document.getElementById("d1");
+            // 小于10在前面加0
+            if(milliseconds<10){
+                milliseconds = "0" + milliseconds;
+            }
+            if(seconds<10){
+                seconds = "0" + seconds;
+            }
+            if(minute<10){
+                minute = "0" + minute;
+            }
+            if(hours<10){
+                hours = "0" + hours;
+            }
+           // 将得到结果输入至页面
+           odiv.innerHTML = (hours + "&nbsp;:&nbsp;" + minute +"&nbsp;:&nbsp;" +seconds + "&nbsp;:&nbsp;" +milliseconds);
+
+           // 一些判断条件
+           //  输入的小时不能大于24小时，24小时等于86400000毫秒
+            if(time > 86400000){
+                odiv.innerHTML = ("&hearts;最大小时数为24");
+                odiv.style.color = "#ffeb3b";
+                clearInterval(set_reset);
+            }
+           //  当倒计时为0的时候停止计时器
+           if( time < 0){
+               odiv.innerHTML = ("&hearts;倒计时结束&hearts;");
+               odiv.style.color = "red";
+               clearInterval(set_reset);
+           }
+           // 输入非数字提示
+            if(isNaN(time)){
+                odiv.innerHTML = ("&hearts;请输入正确的数字");
+                odiv.style.color = "#ffeb3b";
+                clearInterval(set_reset);
+            }
+            // 未输入时间提示
+            if(ohours==""&& ominutes==""&&oseconds==""){
+                odiv.innerHTML = ("&hearts;请输入时间,重置再试");
+                obtn1.innerHTML = "未输时间";
+                obtn2.innerHTML = "未输时间";
+                obtn1.disabled =true;
+                obtn2.disabled =true;
+                odiv.style.color = "#ffeb3b";
+                clearInterval(set_reset);
+            }
+        }
+        // 获取按钮
+        var obtn1 = document.getElementById("btn1");
+        var obtn2 = document.getElementById("btn2");
+        var obtn3 = document.getElementById("btn3");
+        // 鼠标点击执行
+
+        obtn1.onclick = function () {
+            obtn1.innerHTML = "正在执行";
+            obtn2.innerHTML = "点击暂停";
+            set_reset = setInterval("fn1()",100     );
+            console.log(setInterval);
+            // 让input的变为只读
+            document.getElementById("newhours").disabled="turn";
+            document.getElementById("newminutes").disabled="turn";
+            document.getElementById("newseconds").disabled="turn";
+        }
+        obtn2.onclick = function () {
+            clearInterval(set_reset);
+            obtn1.innerHTML = "点击继续";
+            obtn2.innerHTML = "已&ensp;暂&ensp;停"
+
+        }
+        obtn3.onclick = function () {
+            // 重新加载当前页面
+            location.reload()
+        }
+    </script>
+</html>
